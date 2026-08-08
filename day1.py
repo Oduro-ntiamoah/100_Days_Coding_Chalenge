@@ -18,9 +18,8 @@ def password_generator():
         password_length = int(input("How long do you want your password: "))
 
         if password_length < 8:
-            password_length = int(input("Put in a number greater than 8: "))
-            if password_length < 8:
-                password_generator()
+            print("Password length should be greater than 8 characters")
+            password_generator()
         else:
             password = ''.join(random.choice(all_characters) for char in range (password_length))
             print(password)
