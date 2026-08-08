@@ -13,6 +13,7 @@ numbers = '1234567890'
 all_characters = lowercase_letters + uppercase_letters + symbols + numbers
 
 def password_generator():
+    print("The recommended Length for a Password should be more than 8 characters")
     try:    
         password_length = int(input("How long do you want your password: "))
 
