@@ -3,7 +3,7 @@
 A single merged curriculum — combining the strongest ideas from two draft plans, resequenced into a genuine easy → hard progression, with a frontend development track woven in throughout (rather than bolted on at the end), so every tool you build eventually gets a real interface.
 
 ## How it's organized
-- **20 weeks × 5 days = 100 days.** Weekends are for review/catch-up (not counted).
+- **20 weeks × 5 days = 100 days.**.
 - **Daily time**: 20-45 min early on, 45-90 min in Phase 3-4.
 - **Frontend is integrated, not separate**: roughly 1 day per week is frontend-focused, and by Phase 2 you're wiring the backend tools you already built to real UIs.
 - **Ethics note** (carried from both source plans): every tool here is for learning, defense, and testing systems you own or are authorized to test. Anything framed as an "attack" tool (e.g. brute-forcer, MITM detector) is for understanding and defending against the technique, run only in your own lab.
@@ -14,7 +14,7 @@ A single merged curriculum — combining the strongest ideas from two draft plan
 *Core Python, first security concepts, and HTML/CSS/JS basics.*
 
 ### Week 1: Python Security Basics
-- **Day 1**: Random password generator (length, symbols, entropy check)
+- **Day 1**: Random password generator
 - **Day 2**: Hash calculator (MD5/SHA1/SHA256) for any input string or file
 - **Day 3**: Caesar cipher encrypt/decrypt
 - **Day 4**: Password strength checker (length, char classes, common-password list)
