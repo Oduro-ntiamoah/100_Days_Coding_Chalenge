@@ -1,6 +1,7 @@
 '''
-Today is day 3. I will be making a Caesar cipher encrypt/decrypt algorithm
-Side note: Caesar cipher is a type of substitution cipher in which each letter in the plaintext is shifted a certain number of places down or up the alphabet.
+Caesar cipher encrypt/decrypt algorithm
+Day 3 of my 100 day coding challenge
+I would be building a Python based Caesar cipher that would encrypt and decrypt text.
 '''
 
 import sys

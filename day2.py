@@ -1,5 +1,7 @@
 '''
-Today I will be making a Hash calculator (MD5/SHA1/SHA256) for any input string or file
+Hash calculator.
+Day 2 of my 100 day coding challenge
+I would be building a Python based Hash calculator that would compute hashes for strings or files
 '''
 
 import hashlib
