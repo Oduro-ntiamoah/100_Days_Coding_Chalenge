@@ -1,8 +1,7 @@
 '''
 Password strength checker (length, char classes, common-password list)
-Caesar cipher encrypt/decrypt algorithm
-Day 3 of my 100 day coding challenge
-I would be building a Python based Caesar cipher that would encrypt and decrypt text.
+Day 4 of my 100 day coding challenge
+I would be building a Password strength checker
 '''
 
 import string
