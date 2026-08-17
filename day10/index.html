@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker Results</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #ebe5e5;
+            --bg-white: #f1eaea;
+            --bg-light: #f9fafb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000000;
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 32px 20px;
+        }
+
+        .page-shell {
+            width: min(980px, 100%);
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .topbar {
+            padding: 16px 24px;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        .topbar span {
+            display: inline-block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+
+        .main-panel,
+        .side-panel {
+            padding: 32px;
+        }
+
+        .main-panel {
+            border-right: 2px solid var(--border-color);
+            background: var(--bg-white);
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            letter-spacing: 0.05em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 3vw, 3rem);
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .input-wrap {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            background: var(--bg-white);
+        }
+
+        .password-preview {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-light);
+            font-size: 1rem;
+            color: var(--text);
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .strength-header {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .strength-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            background: #d1fae5;
+            color: var(--success);
+            border: 2px solid var(--success);
+            letter-spacing: 0.05em;
+        }
+
+        .badge.warning {
+            background: #fef3c7;
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .badge.danger {
+            background: #fee2e2;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .meter {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .segment {
+            height: 10px;
+            border-radius: 4px;
+            background: var(--border-color);
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .segment.active {
+            background: var(--success);
+        }
+
+        .segment.warning {
+            background: var(--warning);
+        }
+
+        .segment.danger {
+            background: var(--danger);
+        }
+
+        .checklist {
+            margin-top: 24px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 16px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .check-item.pass {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .check-item.fail {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .left .mark {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--success);
+            color: var(--bg-white);
+            border: none;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .check-item.fail .mark {
+            background: var(--danger);
+        }
+
+        .check-item .label {
+            font-size: 0.95rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .status {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--success);
+            font-weight: 700;
+            white-space: nowrap;
+            letter-spacing: 0.05em;
+        }
+
+        .check-item.fail .status {
+            color: var(--danger);
+        }
+
+        .side-panel {
+            background: var(--bg-light);
+        }
+
+        .score-box {
+            padding: 24px;
+            border-radius: 8px;
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+        }
+
+        .score {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .score-value {
+            margin: 12px 0 0;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text);
+        }
+
+        .score-value span {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-left: 4px;
+            font-weight: 600;
+        }
+
+        .risk-box {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #f0fdf4;
+            border: 2px solid var(--success);
+        }
+
+        .risk-box h3 {
+            margin: 0 0 8px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .risk-box p {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .notes {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+        }
+
+        .notes h3 {
+            margin: 0 0 12px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .notes ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .notes li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 760px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .main-panel {
+                border-right: none;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+            .main-panel,
+            .side-panel {
+                padding: 24px 20px;
+            }
+
+            .check-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <div class="topbar">
+            <span>Password Strength Checker</span>
+        </div>
+
+        <div class="content">
+            <main class="main-panel">
+                <p class="eyebrow">Security report</p>
+                <h1 id="heading">Enter a password</h1>
+
+                <div class="input-wrap">
+                    <form method="post" action="/api/check-password">
+                        <input name="password" type="text" placeholder="Type a password..." value="" />
+                        <button type="submit" style="margin-top: 12px; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Check Password</button>
+                    </form>
+                </div>
+
+
+
+                <div class="strength-header">
+                    <div class="strength-label">Overall strength</div>
+                    <div id="strength-badge" class="badge">Strong</div>
+                </div>
+
+                <div class="meter" aria-label="Password strength meter">
+                    <div class="segment active"></div>
+                    <div class="segment active"></div>
+                    <div class="segment active"></div>
+                    <div class="segment active"></div>
+                    <div class="segment active"></div>
+                    <div class="segment active"></div>
+                </div>
+
+                <div class="checklist">
+                    <div class="check-item pass" data-check="length">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Length is at least 8 characters</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+
+                    <div class="check-item pass" data-check="upper_case">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Contains uppercase letters</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+
+                    <div class="check-item pass" data-check="lower_case">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Contains lowercase letters</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+
+                    <div class="check-item pass" data-check="number">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Contains numbers</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+
+                    <div class="check-item pass" data-check="punctuation">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Contains punctuation</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+
+                    <div class="check-item pass" data-check="common_password">
+                        <div class="left">
+                            <div class="mark">✓</div>
+                            <div class="label">Is not a common password</div>
+                        </div>
+                        <div class="status">Pass</div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="side-panel">
+                <div class="score-box">
+                    <p class="score">Score</p>
+                    <div id="score-value" class="score-value">6<span>/6</span></div>
+                </div>
+
+                <div id="risk-box" class="risk-box">
+                    <h3>Risk level</h3>
+                    <p>Low risk</p>
+                </div>
+
+                <div class="notes">
+                    <h3>Tips</h3>
+                    <ul>
+                        <li>Use a unique password for each account.</li>
+                        <li>Prefer long phrases with symbols and numbers.</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+<script>
+    // Get DOM elements
+    const input = document.querySelector('input[name="password"]');
+    const heading = document.getElementById('heading');
+    const badge = document.getElementById('strength-badge');
+    const scoreValue = document.getElementById('score-value');
+    const riskBox = document.getElementById('risk-box');
+    const segments = Array.from(document.querySelectorAll('.segment'));
+    const checkItems = Array.from(document.querySelectorAll('[data-check]'));
+
+    // Function to update check item state
+    function setCheckState(name, passed) {
+        const item = document.querySelector(`[data-check="${name}"]`);
+        if (!item) return;
+        
+        item.classList.remove('pass', 'fail');
+        item.classList.add(passed ? 'pass' : 'fail');
+
+        const mark = item.querySelector('.mark');
+        const status = item.querySelector('.status');
+        mark.textContent = passed ? '✓' : '✕';
+        status.textContent = passed ? 'Pass' : 'Fail';
+    }
+
+    // Function to update the meter
+    function setMeter(score) {
+        const colors = ['danger', 'danger', 'warning', 'warning', 'active', 'active'];
+        
+        segments.forEach((segment, index) => {
+            segment.classList.remove('active', 'warning', 'danger');
+            if (index < score) {
+                segment.classList.add(colors[index]);
+            }
+        });
+    }
+
+    // Main function to update the UI
+    function updateUI(data) {
+        const password = data.password || '';
+        const score = Number(data.score || 0);
+        const max = Number(data.max_score || 6);
+        const strength = data.strength || 'Very Weak';
+        const risk = data.risk || 'High risk';
+        const criteria = data.criteria || {};
+
+        // Update heading
+        heading.textContent = password ? `Your password is ${strength.toLowerCase()}.` : 'Enter a password';
+
+        // Update badge
+        badge.textContent = strength;
+        badge.classList.remove('warning', 'danger');
+        if (strength === 'Weak' || strength === 'Moderate') {
+            badge.classList.add('warning');
+        } else if (strength === 'Very Weak') {
+            badge.classList.add('danger');
+        }
+
+        // Update score
+        scoreValue.innerHTML = `${score}<span>/${max}</span>`;
+
+        // Update risk box
+        const riskP = riskBox.querySelector('p');
+        riskP.textContent = risk;
+        riskBox.style.backgroundColor = score >= 5 
+            ? '#f0fdf4' 
+            : score >= 3 
+                ? '#fffbeb' 
+                : '#fef2f2';
+        riskBox.style.borderColor = score >= 5 
+            ? '#10b981' 
+            : score >= 3 
+                ? '#f59e0b' 
+                : '#ef4444';
+        riskP.style.color = score >= 5 
+            ? '#10b981' 
+            : score >= 3 
+                ? '#f59e0b' 
+                : '#ef4444';
+
+        // Update check items
+        Object.entries(criteria).forEach(([name, passed]) => {
+            setCheckState(name, Boolean(passed));
+        });
+
+        // Update meter
+        setMeter(score);
+    }
+
+    // Function to check password via API
+    async function checkPassword() {
+        const password = input.value;
+        
+        // Don't make API call for empty password
+        if (!password) {
+            updateUI({
+                password: '',
+                score: 0,
+                max_score: 6,
+                strength: 'Very Weak',
+                risk: 'High risk',
+                criteria: {
+                    length: false,
+                    upper_case: false,
+                    lower_case: false,
+                    number: false,
+                    punctuation: false,
+                    common_password: false,
+                }
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/check-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            updateUI(data);
+        } catch (error) {
+            console.error('Could not fetch password details:', error);
+            // Fallback: use client-side validation
+            const result = clientSideCheck(password);
+            updateUI(result);
+        }
+    }
+
+    // Client-side fallback validation
+    function clientSideCheck(password) {
+        const length = password.length >= 8;
+        const hasUpper = /[A-Z]/.test(password);
+        const hasLower = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasPunctuation = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const isCommon = ['password', '123456', '12345678', 'qwerty', 'abc123', 'password123'].includes(password.toLowerCase());
+        
+        const criteria = {
+            length,
+            upper_case: hasUpper,
+            lower_case: hasLower,
+            number: hasNumber,
+            punctuation: hasPunctuation,
+            common_password: !isCommon
+        };
+        
+        const score = Object.values(criteria).filter(Boolean).length;
+        
+        return {
+            password,
+            score,
+            max_score: 6,
+            strength: getStrengthLabel(score),
+            risk: getRiskLabel(score),
+            criteria
+        };
+    }
+
+    function getStrengthLabel(score) {
+        if (score === 6) return 'Strong';
+        if (score >= 4) return 'Moderate';
+        if (score >= 2) return 'Weak';
+        return 'Very Weak';
+    }
+
+    function getRiskLabel(score) {
+        if (score >= 5) return 'Low risk';
+        if (score >= 3) return 'Medium risk';
+        return 'High risk';
+    }
+
+    // Add a preview element to show the password being typed
+    function createPreview() {
+        const previewDiv = document.createElement('div');
+        previewDiv.id = 'password-preview';
+        previewDiv.className = 'password-preview';
+        previewDiv.textContent = 'Type a password to evaluate it';
+        
+        const inputWrap = document.querySelector('.input-wrap');
+        inputWrap.appendChild(previewDiv);
+        return previewDiv;
+    }
+
+    // Initialize
+    const preview = createPreview();
+
+    // Update preview as user types
+    input.addEventListener('input', function() {
+        const password = this.value;
+        preview.textContent = password || 'Type a password to evaluate it';
+        checkPassword();
+    });
+
+    // Prevent form submission (use live checking instead)
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        checkPassword();
+    });
+
+    // Initial check
+    checkPassword();
+
+    // Add some CSS for the password preview if not already present
+    const style = document.createElement('style');
+    style.textContent = `
+        .password-preview {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-light);
+            font-size: 1rem;
+            color: var(--text);
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>
