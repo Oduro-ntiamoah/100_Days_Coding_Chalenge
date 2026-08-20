@@ -29,7 +29,7 @@ A single merged curriculum — combining the strongest ideas from two draft plan
 
 ### Week 3: Networking Basics
 - **Day 11**: Subnet calculator (CIDR → IP range)
-- **Day 12**: DNS resolver showing all record types for a domain
+- **Day 12**: Advanced Calculator
 - **Day 13**: WHOIS lookup tool
 - **Day 14**: Ping sweep to find live hosts on your own LAN
 - **Day 15**: **Frontend**: Basic responsive layout (flexbox/grid) — build a "network toolkit" landing page linking out to each tool's description
